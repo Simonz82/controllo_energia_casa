@@ -434,7 +434,7 @@ function dmOpenChartPopup(card, opts) {
   });
   q(".ece-gc-close").addEventListener("click", close);
 
-  const st = { range: "24h", start: 0, end: 0, active: new Set([0]) };
+  const st = { range: "24h", start: 0, end: 0, active: new Set([Math.min(Math.max(opts.active || 0, 0), series.length - 1)]) };
   let ro = null;
 
   const chipsEl = q(".ece-gc-chips");
