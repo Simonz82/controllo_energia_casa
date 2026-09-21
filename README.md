@@ -51,6 +51,14 @@ Un pulsante sulla card apre il **grafico storico** dei circuiti in **24 h · 7 g
 
 ![Grafico 24 ore](docs/screenshot/grafico-24h-dark.png)
 
+## 🖼️ Tutte le schermate
+
+| Impostazioni (ingranaggio) | Statistiche (barrette) | Circuiti (fulmine) |
+|---|---|---|
+| ![Impostazioni](docs/screenshot/impostazioni-dark.png) | ![Statistiche](docs/screenshot/statistiche-dark.png) | ![Circuiti](docs/screenshot/circuiti-dark.png) |
+
+I grafici (24 h · 7 gg · 30 gg · da … a) sono in [docs/grafici.md](docs/grafici.md). Tutte le schermate esistono anche in tema chiaro (`docs/screenshot/*-light.png`).
+
 ## 🚀 Metodo veloce: usa il mio package originale
 
 Il repository contiene **il mio package vero**, quello che uso a casa, ripulito solo dei dati privati: [`packages/controllo_energia_casa.yaml`](packages/controllo_energia_casa.yaml). Crea da solo tutti i contatori, i costi, gli interruttori, le notifiche e i menu delle barre, con gli stessi nomi che usa la card.
