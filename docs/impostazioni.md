@@ -10,10 +10,13 @@ Se non imposti `legacy_settings_popup`, la card apre il suo popup, con lo stesso
 - `switches`: interruttori (prese, ecc.);
 - `actions`: pulsanti come il reset dei contatori.
 
-Le entità `input_boolean`, `switch` e `automation` diventano interruttori. Le altre (per esempio un `input_number`) mostrano il valore: toccandole si apre la finestra dell'entità per modificarla.
+Le entità `input_boolean`, `switch` e `automation` diventano interruttori, le `input_select` diventano un vero menu a tendina. Le altre (per esempio un `input_number`) mostrano il valore: toccandole si apre la finestra dell'entità per modificarla.
 
 ```yaml
 settings_sections:
+  - title: Aspetto
+    rows:
+      - { entity: input_select.layout_energia, label: Layout }   # la scelta del layout, per prima
   - title: Notifiche Soglia
     rows:
       - { entity: input_boolean.notify_push_soglia,        label: Push }
@@ -57,6 +60,9 @@ legacy_settings_popup:
     content:
       type: entities
       entities:
+        - type: divider
+        - { entity: input_select.layout_energia, name: Layout, icon: mdi:view-dashboard-outline }   # il layout, per primo
+        - type: divider
         - type: custom:multiple-entity-row
           entity: input_datetime.orario_fine_notifiche_soglia_elettrica_casa
           icon: mdi:timer

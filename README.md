@@ -17,7 +17,8 @@ Non richiede altre card: funziona da sola e legge/scrive solo tramite Home Assis
 - **Grafico al clic** su ogni barra: le ultime 6 ore del circuito.
 - **Soglia di allarme**: quando il consumo supera la soglia (con un ritardo che decidi tu) la card mostra un avviso e parte la notifica.
 - **Notifiche separate**: Push sui telefoni, voce su Alexa e messaggio Telegram, ognuna con il suo interruttore (se spegni Telegram, Telegram non parte più). In più le notifiche di consumo giornaliero, mensile e annuale.
-- **Impostazioni** raggiungibili dall'ingranaggio della card: soglia, ritardo, fascia oraria, costo del kWh, scale delle barre, interruttori e il reset dei contatori.
+- **Due layout a scelta**: classico (foto a sinistra) o centrato (foto al centro in alto, blocco OGGI su due colonne). Si sceglie dalla **prima riga delle Impostazioni**.
+- **Impostazioni** raggiungibili dall'ingranaggio della card: layout, soglia, ritardo, fascia oraria, costo del kWh, scale delle barre, interruttori e il reset dei contatori.
 
 | Circuiti | Statistiche |
 |---|---|
@@ -28,6 +29,21 @@ Non richiede altre card: funziona da sola e legge/scrive solo tramite Home Assis
 | ![Grafico](docs/screenshot/barra-light.png) | ![Impostazioni](docs/screenshot/impostazioni-light.png) |
 
 Le stesse schermate in tema scuro si trovano nella cartella [`docs/screenshot`](docs/screenshot).
+
+## 🎛️ Layout classico o centrato
+
+La card è una sola, ma si può mostrare in due modi. La scelta è la **prima riga delle Impostazioni** (l'ingranaggio): un menu a tendina *Classico / Centrato*, e la card cambia subito.
+
+| | Classico | Centrato |
+|---|---|---|
+| **Chiaro** | ![Classico chiaro](docs/screenshot/layout-classico-light.png) | ![Centrato chiaro](docs/screenshot/layout-centrato-light.png) |
+| **Scuro** | ![Classico scuro](docs/screenshot/layout-classico-dark.png) | ![Centrato scuro](docs/screenshot/layout-centrato-dark.png) |
+
+| La riga "Layout" è la prima delle Impostazioni |
+|---|
+| ![Layout nelle impostazioni](docs/screenshot/impostazioni-light.png) |
+
+Nel layout centrato la colonna di destra (con il *Top consumo*) è più larga, e se il nome del dispositivo è troppo lungo si accorcia il nome, mai i watt. Come si attiva: [Configurazione](docs/configurazione.md#layout).
 
 ## 🚀 Metodo veloce: usa il mio package originale
 

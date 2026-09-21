@@ -85,6 +85,15 @@ const STYLE = `
 @keyframes eceh-glow{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes eceh-flicker{0%,100%{opacity:.85}30%{opacity:.5}55%{opacity:1}80%{opacity:.6}}
 .eceh-spin-drum,.eceh-spin-spray,.eceh-spin-spit{transform-box:view-box;transform-origin:120px 130px}
+/* Layout "centrato" della card energia: foto al centro in alto, sotto il blocco OGGI su 2 colonne */
+.ece-ap-card.layout-centrato .ece-ap-top-row{flex-direction:column;align-items:stretch;gap:10px}
+.ece-ap-card.layout-centrato .ece-ap-hero{flex:0 0 auto;width:100%;height:200px}
+.ece-ap-card.layout-centrato .ece-ap-cycle-side{flex:0 0 auto}
+.ece-ap-card.layout-centrato .ece-ap-cycle-cap{margin-bottom:10px}
+.ece-ap-card.layout-centrato .ece-ap-cycle-list{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;flex:0 0 auto}
+.ece-ap-card.layout-centrato.ece-e-card .ece-ap-cycle-list{grid-template-columns:2fr 3fr}
+.ece-ap-card.layout-centrato .ece-ap-cycle-list>.ece-ap-cycle-row:last-child:nth-child(odd){grid-column:1/-1}
+.ece-ap-select{max-width:62%;padding:7px 10px;border-radius:10px;border:1px solid var(--ece-border);background:var(--ece-card);color:var(--ece-text);font-size:14px;font-weight:600;font-family:inherit}
 .ece-ap-card.is-run .eceh-spin-drum{animation:eceh-spin 2.6s linear infinite}
 .ece-ap-card.is-run .eceh-spin-spray{animation:eceh-spin 1.3s linear infinite}
 .ece-ap-card.is-run .eceh-spin-spit{animation:eceh-spin 3.4s linear infinite}
@@ -96,6 +105,9 @@ const STYLE = `
 .ece-ap-cycle-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;min-width:0}
 .ece-ap-cycle-row small{flex:0 0 auto;font-size:10.5px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;color:var(--ece-dim)}
 .ece-ap-cycle-row b{min-width:0;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13.5px;font-weight:400;letter-spacing:-.1px;color:var(--ece-text)}
+.ece-ap-cycle-row b.ece-e-top{display:flex;justify-content:flex-end;overflow:hidden;text-overflow:clip}
+.ece-e-top-n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ece-e-top-w{flex:0 0 auto;white-space:nowrap}
 .ece-ap-cycle-row-b{padding:4px 8px;border-radius:9px;border:1px solid var(--ece-border);background:var(--ece-card);align-items:center}
 .ece-ap-cycle-label{display:flex;align-items:center;gap:5px;min-width:0;flex:0 0 auto}
 .ece-ap-cycle-ic{display:flex;align-items:center;flex:0 0 auto;color:var(--ece-blue)}
@@ -190,6 +202,17 @@ function meterSeverityColor(pct) {
 
 // Inverso di meterSeverityColor: per grandezze dove ALTO e' un bene (es.
 // carica batteria) invece che un problema (es. carico/CPU/disco).
+function applyLayoutChoice(root, cfg, hass) {
+  const card = root && root.querySelector(".ece-ap-card");
+  if (!card) return;
+  let layout = cfg.layout;
+  if (cfg.layout_entity) {
+    const v = String(hass.states[cfg.layout_entity]?.state || "").toLowerCase();
+    if (v === "classico" || v === "centrato") layout = v;
+  }
+  card.classList.toggle("layout-centrato", layout === "centrato");
+}
+
 class ControlloEnergiaCasaCard extends HTMLElement {
   setConfig(config) {
     if (!config.power_entity) throw new Error("power_entity \u00e8 obbligatorio");
@@ -204,6 +227,7 @@ class ControlloEnergiaCasaCard extends HTMLElement {
       switches: [],
       actions: [],
       settings_sections: [],
+      layout: "classico", // "classico" (foto a sinistra) oppure "centrato" (foto in alto, blocco OGGI su 2 colonne)
       notif_center_path: "",
       ...config,
     };
@@ -212,7 +236,7 @@ class ControlloEnergiaCasaCard extends HTMLElement {
     const hero = (HERO_BUILDERS[this._config.artwork] || HERO_BUILDERS.energy)(this._heroId);
     const chip = CHIP_SVGS[this._config.artwork] || CHIP_SVGS.energy;
     this._root.innerHTML = `<style>${STYLE}</style>
-      <article class="ece-ap-card is-run">
+      <article class="ece-ap-card ece-e-card is-run${this._config.layout === "centrato" ? " layout-centrato" : ""}">
         <div class="ece-ap-top">
           <span class="ece-ap-chip">${chip}</span>
           <span class="ece-ap-headings">
@@ -312,6 +336,13 @@ class ControlloEnergiaCasaCard extends HTMLElement {
       overlay.addEventListener("click", (e) => {
         if (e.target === overlay) overlay.hidden = true;
       });
+      // Menu a tendina delle impostazioni (righe input_select): la scelta viene applicata subito.
+      overlay.addEventListener("change", (e) => {
+        const t = e.target;
+        if (t && t.dataset && t.dataset.selectEntity && this._hass) {
+          this._hass.callService("input_select", "select_option", { entity_id: t.dataset.selectEntity, option: t.value });
+        }
+      });
       this._root.appendChild(overlay);
     }
     overlay.innerHTML = `<div class="ece-ap-dialog">
@@ -335,6 +366,12 @@ class ControlloEnergiaCasaCard extends HTMLElement {
         row.label,
         `<button type="button" class="ece-ap-switch${on ? " on" : ""}" data-entity="${esc(row.entity)}" aria-pressed="${on}"></button>`,
       );
+    }
+    if (domain === "input_select") {
+      const opts = (st.attributes?.options || [])
+        .map((o) => `<option value="${esc(o)}"${o === st.state ? " selected" : ""}>${esc(o)}</option>`)
+        .join("");
+      return this._row(row.label, `<select class="ece-ap-select" data-select-entity="${esc(row.entity)}">${opts}</select>`);
     }
     const unit = st.attributes?.unit_of_measurement || "";
     return `<div class="ece-ap-row" data-open-entity="${esc(row.entity)}" style="cursor:pointer">
@@ -633,6 +670,7 @@ class ControlloEnergiaCasaCard extends HTMLElement {
   set hass(hass) {
     this._hass = hass;
     if (!this._config) return;
+    applyLayoutChoice(this._root, this._config, hass);
     const cfg = this._config;
 
     const watt = Number(hass.states[cfg.power_entity]?.state);
@@ -647,7 +685,28 @@ class ControlloEnergiaCasaCard extends HTMLElement {
     if (cfg.periods?.[3]) {
       this._root.querySelector(".ece-e-month-cost").textContent = this._val(hass, cfg.periods[3].cost, 2);
     }
-    this._root.querySelector(".ece-e-top").textContent = cfg.top_entity ? (hass.states[cfg.top_entity]?.state ?? "\u2014") : "\u2014";
+    // "Nome: 57 W": si accorcia (con ...) solo il nome del dispositivo, i watt restano sempre visibili.
+    const topEl = this._root.querySelector(".ece-e-top");
+    const topTxt = cfg.top_entity ? String(hass.states[cfg.top_entity]?.state ?? "\u2014") : "\u2014";
+    const cut = topTxt.lastIndexOf(":");
+    if (cut > 0 && /W\s*$/.test(topTxt)) {
+      const nome = topTxt.slice(0, cut);
+      const watt = topTxt.slice(cut);
+      if (topEl.dataset.v !== topTxt) {
+        topEl.dataset.v = topTxt;
+        topEl.textContent = "";
+        const n = document.createElement("span");
+        n.className = "ece-e-top-n";
+        n.textContent = nome;
+        const w = document.createElement("span");
+        w.className = "ece-e-top-w";
+        w.textContent = watt;
+        topEl.append(n, w);
+      }
+    } else {
+      topEl.dataset.v = topTxt;
+      topEl.textContent = topTxt;
+    }
 
     (cfg.circuits || []).slice(0, 4).forEach((c, i) => {
       const el = this._root.querySelector(`[data-circuit-index="${i}"]`);
@@ -674,6 +733,14 @@ class ControlloEnergiaCasaCard extends HTMLElement {
     const warnEl = this._root.querySelector(".ece-ap-warn");
     const soglia = cfg.soglia_entity ? Number(hass.states[cfg.soglia_entity]?.state) : null;
     const card = this._root.querySelector(".ece-ap-card");
+    // Layout: se c'e' "layout_entity" (un input_select Classico/Centrato scelto dalle Impostazioni)
+    // vale quella scelta, altrimenti il parametro "layout" della configurazione.
+    let layoutScelto = cfg.layout;
+    if (cfg.layout_entity) {
+      const lv = String(hass.states[cfg.layout_entity]?.state || "").toLowerCase();
+      if (lv === "classico" || lv === "centrato") layoutScelto = lv;
+    }
+    card.classList.toggle("layout-centrato", layoutScelto === "centrato");
     if (soglia != null && wattVal > soglia) {
       warnEl.hidden = false;
       warnEl.textContent = `\u26a0 Soglia superata: ${wattVal.toFixed(0)} W (limite ${soglia.toFixed(0)} W)`;

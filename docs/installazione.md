@@ -57,6 +57,7 @@ homeassistant:
 | Costo | `input_number.costo_energia_casa` (€/kWh) |
 | Reset | `script.reset_sensori_energia` |
 | Barre | `input_number.scala_barra_1…4`, `input_text.barra_1…4_entita`, `input_select.barra_1…4_scelta` |
+| Layout | `input_select.layout_energia` (Classico / Centrato) |
 | Top consumo | `sensor.top_consumo_elettrico` |
 | Automazioni | *Automazioni Energia*, *Energia barre: aggiorna elenco entita*, *Energia barre: salva scelta* |
 
@@ -70,6 +71,7 @@ Dopo il riavvio i valori partono da zero: imposta questi una volta sola (da *Str
 - `input_number.scala_barra_1…4`: il valore massimo di ogni barra, per esempio la potenza del contatore.
 - Gli interruttori `input_boolean.notify_*_soglia` accesi solo per i canali che vuoi usare.
 - Le 4 barre: scegli l'entità da misurare, vedi [Barre e scale](barre-e-scale.md).
+- Il **layout** (classico o centrato): prima riga delle Impostazioni della card, vedi [Configurazione](configurazione.md#layout).
 
 ## 4. Aggiungi la card
 

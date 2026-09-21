@@ -15,6 +15,8 @@ top_entity: sensor.top_consumo_elettrico          # opzionale
 soglia_entity: input_number.soglia_lavoro_casa_w  # opzionale: mostra l'avviso sulla card
 media_entity: sensor.media_settimanale_kwh_consumati
 # notif_center_path: /lovelace/notifiche          # opzionale: compare il pulsante megafono
+layout_entity: input_select.layout_energia        # menu Classico / Centrato nelle Impostazioni
+# layout: centrato                                 # in alternativa, layout fisso (classico è il predefinito)
 
 periods:
   - { label: Ogni ora,  energy: sensor.energia_ogni_ora_casa,  cost: sensor.costo_consumo_ogni_ora_casa }
@@ -69,6 +71,9 @@ actions:
     confirm: "Vuoi azzerare tutti i contatori di consumo energia? L'operazione non è reversibile."
 
 settings_sections:                                 # righe del popup Impostazioni "nativo"
+  - title: Aspetto                                 # la scelta del layout, per prima
+    rows:
+      - { entity: input_select.layout_energia, label: Layout }
   - title: Notifiche Soglia
     rows:
       - { entity: input_boolean.notify_push_soglia,     label: Push }
@@ -90,7 +95,18 @@ settings_sections:                                 # righe del popup Impostazion
 | `top_entity` | no | Sensore di testo con il dispositivo che consuma di più (nel package: `sensor.top_consumo_elettrico`) |
 | `soglia_entity` | no | `input_number` con la soglia in watt: se la potenza la supera, la card mostra l'avviso *Soglia superata* |
 | `media_entity` | no | Media settimanale dei kWh, mostrata in coda agli ultimi 7 giorni |
+| `layout_entity` | no | `input_select` con le opzioni *Classico* e *Centrato* (nel package: `input_select.layout_energia`). Il valore scelto decide il layout della card |
+| `layout` | no | Layout fisso: `classico` (predefinito) o `centrato`. Se c'è anche `layout_entity`, vince il menu |
 | `notif_center_path` | no | Percorso di una tua vista (per esempio `/lovelace/notifiche`). Se lo imposti compare il pulsante megafono che ci porta. Senza, il pulsante non compare |
+
+### Layout
+
+| Layout | Disposizione |
+|---|---|
+| `classico` | Foto a sinistra, blocco OGGI (consumo, costo, costo mese, top consumo) a destra, poi le barre |
+| `centrato` | Foto al centro in alto, sotto il blocco OGGI su due colonne (40% / 60%), poi le barre |
+
+Con `layout_entity` la scelta si fa dalla prima riga delle Impostazioni, senza toccare la configurazione: aggiungi come **prima** sezione delle impostazioni la sezione *Aspetto* dell'esempio qui sopra (popup nativo), oppure la riga `input_select.layout_energia` come prima voce del popup `browser_mod` ([Impostazioni](impostazioni.md)).
 
 ### Periodi e giorni
 
