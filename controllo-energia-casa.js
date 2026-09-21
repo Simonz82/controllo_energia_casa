@@ -49,6 +49,8 @@ const ICON_EURO =
   '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.5a6.5 6.5 0 1 0 0 11"/><path d="M5.5 10h9"/><path d="M5.5 14h8"/></svg>';
 const ICON_GEAR =
   '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+const ICON_GRAPH =
+  '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 9,11 13,15 21,6"/><polyline points="15,6 21,6 21,12"/></svg>';
 const ICON_NOTIFCENTER =
   '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h3l4 4V6l-4 4H4a1 1 0 0 0-1 1z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>';
 const ICON_TREND =
@@ -73,6 +75,7 @@ const STYLE = `
 .ece-ap-dot{width:7px;height:7px;border-radius:50%;background:currentColor}
 .ece-ap-tools{display:flex;gap:4px;flex:0 0 auto}
 .ece-ap-tool{width:37px;height:37px;display:grid;place-items:center;border:1px solid var(--ece-border);border-radius:11px;background:var(--ece-card);color:var(--ece-dim);cursor:pointer}
+.ece-ap-tool[hidden]{display:none}
 .ece-ap-tool svg{width:19px;height:19px}
 .ece-ap-tool:hover{border-color:#bae6fd;color:var(--ece-blue-deep)}
 .ece-ap-top-row{display:flex;align-items:stretch;gap:10px;margin:0 13px}
@@ -181,6 +184,54 @@ const STYLE = `
 .ece-ap-reset-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:10px;border:0;border-radius:13px;background:var(--ece-blue);color:#fff;font-size:14px;font-weight:850;cursor:pointer}
 .ece-ap-reset-note{font-size:12px;color:var(--ece-dim);text-align:center;margin-top:4px}
 
+.ece-gc-dialog{width:min(780px,100%);max-height:94vh;overflow:auto;padding:20px 22px 22px;background:var(--ece-card);color:var(--ece-text);border:1px solid var(--ece-border);border-top:3px solid var(--ece-blue);border-radius:26px;box-shadow:0 32px 64px -28px rgba(2,6,23,.55),0 6px 18px -12px rgba(2,6,23,.3)}
+.ece-gc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--ece-border)}
+.ece-gc-title{margin:0;font-size:20px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ece-gc-close{flex:0 0 auto;border:1px solid var(--ece-border);border-radius:999px;padding:8px 14px;background:var(--ece-soft);color:var(--ece-dim);font:inherit;font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+.ece-gc-tabs{display:flex;gap:4px;margin:16px 0 10px;padding:6px;border-radius:999px;background:var(--ece-soft);border:1px solid var(--ece-border)}
+.ece-gc-tab{flex:1 1 0;min-width:0;border:0;border-radius:999px;padding:9px 6px;background:transparent;color:var(--ece-dim);font:inherit;font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;cursor:pointer}
+.ece-gc-tab.on{background:linear-gradient(135deg,#0c4a6e,#075985);color:#7dd3fc;box-shadow:0 4px 12px rgba(14,165,233,.25)}
+.ece-gc-custom{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin:0 0 10px;padding:12px;border-radius:16px;background:var(--ece-soft)}
+.ece-gc-custom label{display:flex;flex-direction:column;gap:4px;flex:1 1 170px;min-width:0}
+.ece-gc-custom label span{font-size:10.5px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--ece-dim)}
+.ece-gc-custom input{width:100%;box-sizing:border-box;padding:9px 10px;border-radius:11px;border:1px solid var(--ece-border);background:var(--ece-card);color:var(--ece-text);font:inherit;font-size:14px;color-scheme:light dark}
+.ece-gc-apply{flex:0 0 auto;border:0;border-radius:11px;padding:0 18px;height:38px;background:var(--ece-blue);color:#fff;font:inherit;font-size:13px;font-weight:900;cursor:pointer}
+.ece-gc-msg{flex:1 0 100%;color:#ef4444;font-weight:800;font-size:12px}
+.ece-gc-msg:empty{display:none}
+.ece-gc-custom[hidden],.ece-gc-cross[hidden],.ece-gc-tip[hidden],.ece-gc-chips[hidden]{display:none}
+.ece-gc-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.ece-gc-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ece-border);border-radius:999px;padding:6px 11px;background:var(--ece-card);color:var(--ece-dim);font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.ece-gc-chip i{width:9px;height:9px;border-radius:50%;background:var(--c);opacity:.35}
+.ece-gc-chip.on{color:var(--ece-text);border-color:var(--c)}
+.ece-gc-chip.on i{opacity:1}
+.ece-gc-plot{position:relative;min-height:290px}
+.ece-gc-svgwrap{width:100%}
+.ece-gc-svg{display:block;max-width:100%;touch-action:pan-y;cursor:crosshair}
+.ece-gc-grid{stroke:var(--ece-border);stroke-width:1;stroke-dasharray:2 4}
+.ece-gc-ax{font-size:11px;font-weight:700;fill:var(--ece-dim)}
+.ece-gc-cross{stroke:var(--ece-dim);stroke-width:1;stroke-dasharray:3 3}
+.ece-gc-loading{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--ece-dim);background:color-mix(in srgb,var(--ece-card) 70%,transparent)}
+.ece-gc-tip{position:absolute;z-index:3;pointer-events:none;padding:8px 11px;border-radius:12px;background:var(--ece-card);border:1px solid var(--ece-border);box-shadow:0 8px 22px rgba(2,6,23,.3);font-size:12.5px;line-height:1.45;white-space:nowrap}
+.ece-gc-tip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.ece-gc-tip-t{font-size:11px;font-weight:800;color:var(--ece-dim);margin-bottom:2px}
+.ece-gc-sum{display:flex;flex-direction:column;gap:3px;margin-top:10px;font-size:12.5px;color:var(--ece-dim);text-align:center}
+.ece-gc-sum b{color:var(--ece-text);font-weight:800}
+@media (max-width:600px){
+  .ece-gc-ov{align-items:flex-end}
+  .ece-gc-dialog{width:100%;max-width:100%;min-height:62vh;max-height:94vh;padding:16px 14px 18px;border-radius:24px 24px 0 0}
+  .ece-gc-title{font-size:16px}
+  .ece-gc-tab{font-size:11px;letter-spacing:.4px;padding:9px 2px}
+  .ece-ap-tool{width:33px;height:33px}
+}
+
+.ece-gt-help{margin:0 0 10px;font-size:13.5px;line-height:1.45;color:var(--ece-dim)}
+.ece-gt-help b{color:var(--ece-text)}
+.ece-gt-example{margin:0 0 10px;padding:10px 12px;border-radius:13px;background:var(--ece-soft);border-left:3px solid var(--ece-blue);font-size:13px;line-height:1.6;color:var(--ece-dim)}
+.ece-gt-example b{color:var(--ece-text)}
+.ece-gt-input{width:100%;box-sizing:border-box;padding:11px 12px;border-radius:13px;border:1px solid var(--ece-border);background:var(--ece-soft);color:var(--ece-text);font:inherit;font-size:15px;resize:vertical}
+.ece-gt-count{text-align:right;font-size:11px;font-weight:800;color:var(--ece-dim);margin-top:3px}
+.ece-gt-preview{display:flex;flex-wrap:wrap;gap:6px}
+.ece-gt-chip{padding:6px 11px;border-radius:999px;background:var(--ece-soft);border:1px solid var(--ece-border);font-size:13.5px;font-weight:700}
 @media (max-width:600px){
   .ece-ap-overlay{align-items:flex-end;padding:0;backdrop-filter:blur(4px)}
   .ece-ap-dialog{width:100%;max-width:100%;height:94vh;max-height:94vh;border-radius:22px 22px 0 0;display:flex;flex-direction:column}
@@ -211,6 +262,442 @@ function applyLayoutChoice(root, cfg, hass) {
     if (v === "classico" || v === "centrato") layout = v;
   }
   card.classList.toggle("layout-centrato", layout === "centrato");
+}
+
+// -----------------------------------------------------------------------
+// Popup "Grafici" condiviso da tutte le card: periodi 24h / 7gg / 30gg e
+// "Da ... a" (date a scelta), grafico SVG che si ridisegna alla larghezza
+// disponibile (piu' grande su PC, piu' stretto su smartphone), con tooltip
+// al passaggio del mouse / tocco. Nessuna libreria esterna: dati dalla
+// cronologia (24h) e dalle statistiche a lungo termine (7gg, 30gg, date).
+//   dmOpenChartPopup(card, { title, series: [{ entity, label, color, unit }] })
+// Piu' serie con la stessa unita' si sovrappongono (chip per accenderle).
+// -----------------------------------------------------------------------
+const GC_RANGES = [
+  { key: "24h", label: "24 h", ms: 24 * 3600e3 },
+  { key: "7d", label: "7 gg", ms: 7 * 86400e3 },
+  { key: "30d", label: "30 gg", ms: 30 * 86400e3 },
+];
+
+function gcFmt(v, unit) {
+  if (!Number.isFinite(v)) return "—";
+  const a = Math.abs(v);
+  const s = v.toLocaleString("it-IT", { maximumFractionDigits: a >= 100 ? 0 : a >= 10 ? 1 : 2 });
+  return unit ? `${s} ${unit}` : s;
+}
+
+function gcNiceTicks(min, max, n) {
+  const span = max - min || 1;
+  const raw = span / n;
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const f = raw / p;
+  const step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
+  const lo = Math.floor(min / step) * step;
+  const hi = Math.ceil(max / step) * step;
+  const ticks = [];
+  for (let v = lo; v <= hi + step / 2; v += step) ticks.push(Math.round(v / step) * step);
+  return ticks;
+}
+
+// Sensori "istantanei" (potenza, corrente, banda): si tiene il PICCO di ogni intervallo, la media
+// appiattirebbe i picchi (es. 2100 W di una resistenza diventano 400 W di media oraria).
+function gcIsPeak(unit) {
+  return /^(k?W|A|mA|Mbit\/s|kbit\/s|Mbps)$/i.test(String(unit || "").trim());
+}
+
+function gcDownsample(pts, start, end, target, peak) {
+  if (pts.length <= target) return pts;
+  const bucket = (end - start) / target;
+  const out = [];
+  let i = 0;
+  while (i < pts.length) {
+    const b = Math.floor((pts[i].t - start) / bucket);
+    let sum = 0;
+    let n = 0;
+    let mx = -Infinity;
+    let j = i;
+    while (j < pts.length && Math.floor((pts[j].t - start) / bucket) === b) {
+      sum += pts[j].y;
+      if (pts[j].y > mx) mx = pts[j].y;
+      n++;
+      j++;
+    }
+    out.push({ t: start + (b + 0.5) * bucket, y: peak ? mx : sum / n });
+    i = j;
+  }
+  return out;
+}
+
+async function gcFetch(hass, entityId, start, end, unit) {
+  const span = end - start;
+  const peak = gcIsPeak(unit);
+  const iso = (ms) => new Date(ms).toISOString();
+  const history = async () => {
+    const res = await hass.connection.sendMessagePromise({
+      type: "history/history_during_period",
+      start_time: iso(start),
+      end_time: iso(end),
+      entity_ids: [entityId],
+      minimal_response: true,
+      no_attributes: true,
+    });
+    const pts = (res?.[entityId] || [])
+      .map((r) => ({ t: (r.lu || r.last_updated_ts) * 1000 || new Date(r.last_updated).getTime(), y: Number(r.s ?? r.state) }))
+      .filter((p) => Number.isFinite(p.y) && Number.isFinite(p.t));
+    // Il valore resta quello dell'ultimo cambio fino ad adesso: la linea arriva fino alla fine del periodo.
+    if (pts.length && pts[pts.length - 1].t < end - 60e3) pts.push({ t: end, y: pts[pts.length - 1].y });
+    return gcDownsample(pts, start, end, span > 26 * 3600e3 ? 520 : 360, peak);
+  };
+  // Fino a 8 giorni si usano i dati reali della cronologia (picchi veri); oltre, o se la cronologia
+  // e' stata eliminata dal database, le statistiche a lungo termine (massimo orario per la potenza).
+  if (span <= 8 * 86400e3) {
+    try {
+      const pts = await history();
+      if (pts.length > 1) return pts;
+    } catch (e) {
+      /* si passa alle statistiche */
+    }
+  }
+  if (span > 26 * 3600e3) {
+    try {
+      const res = await hass.connection.sendMessagePromise({
+        type: "recorder/statistics_during_period",
+        start_time: iso(start),
+        end_time: iso(end),
+        statistic_ids: [entityId],
+        period: span > 45 * 86400e3 ? "day" : "hour",
+      });
+      const pts = (res?.[entityId] || [])
+        .map((r) => ({ t: new Date(r.start).getTime(), y: Number((peak ? r.max : r.mean) ?? r.mean ?? r.max ?? r.state) }))
+        .filter((p) => Number.isFinite(p.y) && Number.isFinite(p.t));
+      if (pts.length) return gcDownsample(pts, start, end, 400, peak);
+    } catch (e) {
+      /* nessun dato */
+    }
+  }
+  return span <= 8 * 86400e3 ? [] : history();
+}
+
+function gcToLocalInput(ms) {
+  const d = new Date(ms - new Date(ms).getTimezoneOffset() * 60000);
+  return d.toISOString().slice(0, 16);
+}
+
+function dmBindGraph(card) {
+  const b = card._root.querySelector(".ece-ap-graph");
+  if (!b) return;
+  b.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dmOpenChartPopup(card, { title: card._config.name, series: card._graphSeries() });
+  });
+}
+
+function dmOpenChartPopup(card, opts) {
+  const root = card._root;
+  const hass = () => card._hass;
+  const series = (opts.series || [])
+    .filter((s) => s.entity)
+    .map((s) => ({
+      ...s,
+      label: s.label || hass()?.states[s.entity]?.attributes?.friendly_name || s.entity,
+      unit: s.unit ?? hass()?.states[s.entity]?.attributes?.unit_of_measurement ?? "",
+      color: s.color || "#0ea5e9",
+      pts: [],
+    }));
+  if (!series.length) return;
+
+  root.querySelectorAll(".ece-gc-ov").forEach((n) => n.remove());
+  const ov = document.createElement("div");
+  ov.className = "ece-ap-overlay ece-gc-ov";
+  ov.innerHTML = `<div class="ece-gc-dialog">
+    <div class="ece-gc-head"><h3 class="ece-gc-title">${esc(opts.title || series[0].label)}</h3>
+      <button type="button" class="ece-gc-close">✕ Chiudi</button></div>
+    <div class="ece-gc-tabs">${GC_RANGES.map((r) => `<button type="button" class="ece-gc-tab" data-range="${r.key}">${r.label}</button>`).join("")}<button type="button" class="ece-gc-tab" data-range="custom">Da … a</button></div>
+    <div class="ece-gc-custom" hidden>
+      <label><span>Da</span><input type="datetime-local" class="ece-gc-from"></label>
+      <label><span>A</span><input type="datetime-local" class="ece-gc-to"></label>
+      <button type="button" class="ece-gc-apply">Applica</button>
+      <small class="ece-gc-msg"></small>
+    </div>
+    <div class="ece-gc-chips"></div>
+    <div class="ece-gc-plot"><div class="ece-gc-loading">Caricamento…</div><div class="ece-gc-svgwrap"></div><div class="ece-gc-tip" hidden></div></div>
+    <div class="ece-gc-sum"></div>
+  </div>`;
+  root.appendChild(ov);
+  const q = (s) => ov.querySelector(s);
+  const close = () => {
+    if (ro) ro.disconnect();
+    ov.remove();
+  };
+  ov.addEventListener("click", (e) => {
+    if (e.target === ov) close();
+  });
+  q(".ece-gc-close").addEventListener("click", close);
+
+  const st = { range: "24h", start: 0, end: 0, active: new Set([0]) };
+  let ro = null;
+
+  const chipsEl = q(".ece-gc-chips");
+  const drawChips = () => {
+    if (series.length < 2) {
+      chipsEl.hidden = true;
+      return;
+    }
+    chipsEl.innerHTML = series
+      .map((s, i) => `<button type="button" class="ece-gc-chip${st.active.has(i) ? " on" : ""}" data-i="${i}" style="--c:${s.color}"><i></i>${esc(s.label)}</button>`)
+      .join("");
+  };
+  chipsEl.addEventListener("click", (e) => {
+    const b = e.target.closest(".ece-gc-chip");
+    if (!b) return;
+    const i = Number(b.dataset.i);
+    const same = [...st.active].every((k) => series[k].unit === series[i].unit);
+    if (!same) st.active = new Set([i]);
+    else if (st.active.has(i)) {
+      if (st.active.size > 1) st.active.delete(i);
+    } else st.active.add(i);
+    drawChips();
+    render();
+  });
+
+  const fmtX = (ms, span) => {
+    const d = new Date(ms);
+    if (span <= 26 * 3600e3) return d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    if (span <= 4 * 86400e3) return d.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+    if (span <= 8 * 86400e3) return d.toLocaleDateString("it-IT", { weekday: "short", day: "numeric" });
+    return d.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit" });
+  };
+
+  const wrap = q(".ece-gc-svgwrap");
+  const tip = q(".ece-gc-tip");
+  let geo = null;
+
+  function render() {
+    const act = [...st.active].map((i) => series[i]);
+    const W = Math.max(260, Math.floor(wrap.clientWidth || q(".ece-gc-plot").clientWidth || 600));
+    const H = W < 520 ? Math.round(Math.min(420, Math.max(290, (window.innerHeight || 700) * 0.42))) : 360;
+    const all = act.flatMap((s) => s.pts.map((p) => p.y));
+    if (!all.length) {
+      wrap.innerHTML = `<div class="ece-ap-chart-empty" style="height:${H}px;display:grid;place-items:center">Nessun dato nel periodo</div>`;
+      q(".ece-gc-sum").innerHTML = "";
+      geo = null;
+      return;
+    }
+    const unit = act[0].unit;
+    let lo = Math.min(...all);
+    let hi = Math.max(...all);
+    const isPct = unit === "%";
+    const isTemp = /°/.test(unit);
+    if (isPct) {
+      lo = 0;
+      hi = 100;
+    } else if (isTemp) {
+      const pad = Math.max(1, (hi - lo) * 0.15);
+      lo -= pad;
+      hi += pad;
+    } else {
+      lo = Math.min(0, lo);
+      if (hi - lo < 1) hi = lo + (gcIsPeak(unit) ? 10 : 1);
+    }
+    const ticks = isPct ? [0, 25, 50, 75, 100] : gcNiceTicks(lo, hi, W < 520 ? 4 : 5);
+    const yMin = ticks[0];
+    const yMax = ticks[ticks.length - 1] || 1;
+    const labW = Math.max(...ticks.map((t) => gcFmt(t).length)) * 6.6 + 12;
+    const m = { l: labW, r: 10, t: 12, b: 26 };
+    const pw = W - m.l - m.r;
+    const ph = H - m.t - m.b;
+    const X = (t) => m.l + ((t - st.start) / (st.end - st.start)) * pw;
+    const Y = (v) => m.t + ph - ((v - yMin) / (yMax - yMin || 1)) * ph;
+    const span = st.end - st.start;
+    const nx = W < 520 ? 4 : 6;
+    let g = "";
+    ticks.forEach((t) => {
+      g += `<line x1="${m.l}" y1="${Y(t).toFixed(1)}" x2="${W - m.r}" y2="${Y(t).toFixed(1)}" class="ece-gc-grid"/>
+        <text x="${m.l - 6}" y="${(Y(t) + 3.5).toFixed(1)}" text-anchor="end" class="ece-gc-ax">${gcFmt(t)}</text>`;
+    });
+    for (let i = 0; i < nx; i++) {
+      const t = st.start + (span * i) / (nx - 1);
+      const anchor = i === 0 ? "start" : i === nx - 1 ? "end" : "middle";
+      g += `<text x="${X(t).toFixed(1)}" y="${H - 7}" text-anchor="${anchor}" class="ece-gc-ax">${fmtX(t, span)}</text>`;
+    }
+    let defs = "";
+    let body = "";
+    act.forEach((s, k) => {
+      if (!s.pts.length) return;
+      const gid = `gc${k}${Math.random().toString(36).slice(2, 6)}`;
+      // A gradini: il valore resta quello dell'ultimo cambio fino al successivo (come lo stato reale).
+      const stepped = [];
+      s.pts.forEach((p, i) => {
+        if (i > 0) stepped.push([p.t, s.pts[i - 1].y]);
+        stepped.push([p.t, p.y]);
+      });
+      const line = stepped.map(([t, y]) => `${X(t).toFixed(1)},${Y(y).toFixed(1)}`);
+      const first = X(s.pts[0].t).toFixed(1);
+      const last = X(s.pts[s.pts.length - 1].t).toFixed(1);
+      defs += `<linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s.color}" stop-opacity="${act.length > 1 ? 0.18 : 0.42}"/><stop offset="1" stop-color="${s.color}" stop-opacity="0.02"/></linearGradient>`;
+      body += `<polygon points="${first},${Y(yMin).toFixed(1)} ${line.join(" ")} ${last},${Y(yMin).toFixed(1)}" fill="url(#${gid})"/>
+        <polyline points="${line.join(" ")}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    });
+    wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="ece-gc-svg"><defs>${defs}</defs>${g}${body}
+      <line class="ece-gc-cross" x1="0" y1="${m.t}" x2="0" y2="${m.t + ph}" hidden/></svg>`;
+    geo = { W, H, m, X, Y, act, pw, ph };
+
+    const s0 = act[0];
+    const vals = s0.pts.map((p) => p.y);
+    const avg = vals.reduce((a, b) => a + b, 0) / (vals.length || 1);
+    q(".ece-gc-sum").innerHTML = act
+      .map((s) => {
+        const v = s.pts.map((p) => p.y);
+        if (!v.length) return "";
+        const a = v.reduce((x, y) => x + y, 0) / v.length;
+        return `<span class="ece-gc-sumrow"><b style="color:${s.color}">${act.length > 1 ? esc(s.label) + " · " : ""}</b>Min <b>${gcFmt(Math.min(...v), s.unit)}</b> · Media <b>${gcFmt(a, s.unit)}</b> · Max <b>${gcFmt(Math.max(...v), s.unit)}</b></span>`;
+      })
+      .join("");
+    void avg;
+  }
+
+  const onMove = (ev) => {
+    if (!geo) return;
+    const svg = wrap.querySelector("svg");
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const px = ((ev.clientX - rect.left) / rect.width) * geo.W;
+    if (px < geo.m.l || px > geo.W - geo.m.r) {
+      tip.hidden = true;
+      return;
+    }
+    const tms = st.start + ((px - geo.m.l) / geo.pw) * (st.end - st.start);
+    const rows = geo.act
+      .map((s) => {
+        if (!s.pts.length) return null;
+        let best = s.pts[0];
+        for (const p of s.pts) {
+          if (p.t <= tms) best = p;
+          else break;
+        }
+        return { s, p: best };
+      })
+      .filter(Boolean);
+    if (!rows.length) return;
+    const cx = px;
+    const cross = svg.querySelector(".ece-gc-cross");
+    cross.setAttribute("x1", cx);
+    cross.setAttribute("x2", cx);
+    cross.removeAttribute("hidden");
+    svg.querySelectorAll(".ece-gc-dot").forEach((n) => n.remove());
+    rows.forEach((r) => {
+      const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttribute("class", "ece-gc-dot");
+      c.setAttribute("cx", px);
+      c.setAttribute("cy", geo.Y(r.p.y));
+      c.setAttribute("r", 4);
+      c.setAttribute("fill", r.s.color);
+      svg.appendChild(c);
+    });
+    const when = new Date(tms).toLocaleString("it-IT", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+    tip.innerHTML = `<div class="ece-gc-tip-t">${when}</div>${rows
+      .map((r) => `<div><i style="background:${r.s.color}"></i>${geo.act.length > 1 ? esc(r.s.label) + ": " : ""}<b>${gcFmt(r.p.y, r.s.unit)}</b></div>`)
+      .join("")}`;
+    tip.hidden = false;
+    const plot = q(".ece-gc-plot").getBoundingClientRect();
+    let left = ev.clientX - plot.left + 14;
+    if (left + tip.offsetWidth > plot.width - 4) left = ev.clientX - plot.left - tip.offsetWidth - 14;
+    tip.style.left = `${Math.max(4, left)}px`;
+    tip.style.top = `${Math.max(4, ev.clientY - plot.top - 10 - tip.offsetHeight / 2)}px`;
+  };
+  wrap.addEventListener("pointermove", onMove);
+  wrap.addEventListener("pointerdown", onMove);
+  wrap.addEventListener("pointerleave", () => {
+    tip.hidden = true;
+    const c = wrap.querySelector(".ece-gc-cross");
+    if (c) c.setAttribute("hidden", "");
+    wrap.querySelectorAll(".ece-gc-dot").forEach((n) => n.remove());
+  });
+
+  let token = 0;
+  async function load() {
+    const my = ++token;
+    q(".ece-gc-loading").style.display = "flex";
+    try {
+      const idx = [...st.active];
+      const need = series.map((_, i) => i).filter((i) => idx.includes(i) && !series[i]._key?.startsWith(`${st.start}|${st.end}`));
+      await Promise.all(
+        need.map(async (i) => {
+          series[i].pts = await gcFetch(hass(), series[i].entity, st.start, st.end, series[i].unit);
+          series[i]._key = `${st.start}|${st.end}`;
+        }),
+      );
+    } catch (e) {
+      if (my === token) wrap.innerHTML = `<div class="ece-ap-chart-empty">Errore caricamento dati</div>`;
+      q(".ece-gc-loading").style.display = "none";
+      return;
+    }
+    if (my !== token) return;
+    q(".ece-gc-loading").style.display = "none";
+    render();
+  }
+
+  // Le serie accese dopo un cambio di periodo vanno ricaricate: si invalida la cache e si ricarica.
+  const origRender = render;
+  render = function () {
+    const missing = [...st.active].some((i) => series[i]._key !== `${st.start}|${st.end}`);
+    if (missing) load();
+    else origRender();
+  };
+
+  function setRange(key) {
+    st.range = key;
+    ov.querySelectorAll(".ece-gc-tab").forEach((b) => b.classList.toggle("on", b.dataset.range === key));
+    const custom = q(".ece-gc-custom");
+    if (key === "custom") {
+      custom.hidden = false;
+      if (!q(".ece-gc-from").value) {
+        q(".ece-gc-from").value = gcToLocalInput(Date.now() - 3 * 86400e3);
+        q(".ece-gc-to").value = gcToLocalInput(Date.now());
+      }
+      return;
+    }
+    custom.hidden = true;
+    const r = GC_RANGES.find((x) => x.key === key);
+    st.end = Date.now();
+    st.start = st.end - r.ms;
+    render();
+  }
+  ov.querySelectorAll(".ece-gc-tab").forEach((b) => b.addEventListener("click", () => setRange(b.dataset.range)));
+  q(".ece-gc-apply").addEventListener("click", () => {
+    const a = new Date(q(".ece-gc-from").value).getTime();
+    const b = new Date(q(".ece-gc-to").value).getTime();
+    const msg = q(".ece-gc-msg");
+    if (!Number.isFinite(a) || !Number.isFinite(b)) {
+      msg.textContent = "Scegli entrambe le date";
+      return;
+    }
+    if (b <= a) {
+      msg.textContent = "La data finale deve essere dopo quella iniziale";
+      return;
+    }
+    if (b - a > 400 * 86400e3) {
+      msg.textContent = "Massimo 400 giorni";
+      return;
+    }
+    msg.textContent = "";
+    st.start = a;
+    st.end = Math.min(b, Date.now());
+    st.range = "custom";
+    render();
+  });
+
+  drawChips();
+  let lastW = 0;
+  ro = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
+    const w = wrap.clientWidth;
+    if (geo && w && w !== lastW) {
+      lastW = w;
+      origRender();
+    }
+  }) : null;
+  if (ro) ro.observe(q(".ece-gc-plot"));
+  setRange("24h");
 }
 
 class ControlloEnergiaCasaCard extends HTMLElement {
@@ -247,6 +734,7 @@ class ControlloEnergiaCasaCard extends HTMLElement {
             <button type="button" class="ece-ap-tool ece-ap-notif-center" title="Centro Notifiche">${ICON_NOTIFCENTER}</button>
             <button type="button" class="ece-ap-tool ece-ap-settings" title="Impostazioni">${ICON_GEAR}</button>
             <button type="button" class="ece-ap-tool ece-ap-stats" title="Statistiche">${ICON_CHART}</button>
+            <button type="button" class="ece-ap-tool ece-ap-graph" title="Grafici">${ICON_GRAPH}</button>
             <button type="button" class="ece-ap-tool ece-ap-consumi" title="Circuiti">${ICON_BOLT}</button>
           </span>
         </div>
@@ -268,6 +756,7 @@ class ControlloEnergiaCasaCard extends HTMLElement {
         </div>
       </article>`;
     this._root.querySelector(".ece-ap-name").textContent = this._config.name;
+    dmBindGraph(this);
 
     // Le prime 4 voci di "circuits" (Generale/Prese/Luce/Cantina nel setup
     // reale) diventano le barre sul fronte, come CPU/RAM sulle altre card;
@@ -542,22 +1031,7 @@ class ControlloEnergiaCasaCard extends HTMLElement {
 
   _openMeterChart(entityId, title, color) {
     if (!entityId) return;
-    this._openDialog(
-      title,
-      `<div class="ece-ap-sec"><div class="ece-ap-sec-cap">Ultime 6 ore</div><div class="ece-ap-chart-loading" data-chart="6h">Caricamento...</div></div>`,
-    );
-    const overlay = this._root.querySelector(".ece-ap-overlay");
-    const slot = overlay?.querySelector('[data-chart="6h"]');
-    this._fetchHistory6h(entityId)
-      .then((points) => {
-        const el = overlay?.querySelector('[data-chart="6h"]');
-        if (!el) return;
-        const labels = this._labelSpans(points, 7, (p) => p.t.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }));
-        el.outerHTML = `<div data-chart="6h">${this._lineChartSvg(points, color)}${labels}</div>`;
-      })
-      .catch(() => {
-        if (slot) slot.textContent = "Errore caricamento dati";
-      });
+    dmOpenChartPopup(this, { title, series: [{ entity: entityId, label: title, color }] });
   }
 
   _openPowerHistory() {
@@ -749,6 +1223,16 @@ class ControlloEnergiaCasaCard extends HTMLElement {
       warnEl.hidden = true;
       card.classList.remove("has-alarm");
     }
+  }
+
+  _graphSeries() {
+    const colors = ["#38bdf8", "#22c55e", "#eab308", "#f97316", "#a855f7", "#ef4444"];
+    const out = [];
+    (this._config.circuits || []).forEach((c) => {
+      const eid = this._barEntity(c, this._hass);
+      if (eid) out.push({ entity: eid, label: this._barLabel(c, this._hass, eid), color: colors[out.length % colors.length] });
+    });
+    return out;
   }
 
   getCardSize() {

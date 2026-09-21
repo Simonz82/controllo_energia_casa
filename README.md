@@ -45,6 +45,12 @@ La card è una sola, ma si può mostrare in due modi. La scelta è la **prima ri
 
 Nel layout centrato la colonna di destra (con il *Top consumo*) è più larga, e se il nome del dispositivo è troppo lungo si accorcia il nome, mai i watt. Come si attiva: [Configurazione](docs/configurazione.md#layout).
 
+## 📈 Grafici storici
+
+Un pulsante sulla card apre il **grafico storico** dei circuiti in **24 h · 7 gg · 30 gg · da … a** (date a scelta), adattato a PC e smartphone, con i picchi reali e curve sovrapposte. Guida: [docs/grafici.md](docs/grafici.md).
+
+![Grafico 24 ore](docs/screenshot/grafico-24h-dark.png)
+
 ## 🚀 Metodo veloce: usa il mio package originale
 
 Il repository contiene **il mio package vero**, quello che uso a casa, ripulito solo dei dati privati: [`packages/controllo_energia_casa.yaml`](packages/controllo_energia_casa.yaml). Crea da solo tutti i contatori, i costi, gli interruttori, le notifiche e i menu delle barre, con gli stessi nomi che usa la card.
@@ -57,6 +63,8 @@ Il repository contiene **il mio package vero**, quello che uso a casa, ripulito 
 Tutta la procedura, passo per passo: **[docs/installazione.md](docs/installazione.md)**.
 
 ## 📚 Guida
+
+- [Grafici 24 h · 7 gg · 30 gg · da … a](docs/grafici.md)
 
 | Pagina | Contenuto |
 |---|---|
