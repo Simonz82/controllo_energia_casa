@@ -1,5 +1,7 @@
 # ⚡ Controllo Energia Casa
 
+> 📦 **Questo progetto è confluito in [smart-home-cards](https://github.com/Simonz82/smart-home-cards)**, il repository unico che raccoglie tutte le mie card per Home Assistant (elettrodomestici, energia, FritzBox, server HA, NAS, Proxmox, UPS, raccolta differenziata). Se stai installando da zero, usa quello — questo repo resta online per chi lo aveva già installato, ma non riceverà più novità qui.
+
 Una card per **Home Assistant** che controlla l'energia di tutta la casa in un'unica vista: consumo istantaneo, 4 barre dei circuiti che scegli tu, costi per periodo, statistiche, avviso di soglia superata e notifiche (Push, Alexa, Telegram), ognuna con il suo interruttore.
 
 Non richiede altre card: funziona da sola e legge/scrive solo tramite Home Assistant.
