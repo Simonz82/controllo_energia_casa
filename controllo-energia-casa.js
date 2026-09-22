@@ -700,6 +700,157 @@ function dmOpenChartPopup(card, opts) {
   setRange("24h");
 }
 
+const DM_EDITOR_STYLE = `
+  :host{display:block;padding:4px 0 12px}
+  .ece-ed-row{margin-bottom:14px}
+  .ece-ed-label{display:block;font-size:13px;font-weight:700;color:var(--primary-text-color);margin-bottom:6px}
+  .ece-ed-hint{font-size:12px;color:var(--secondary-text-color);margin:2px 0 8px;line-height:1.4}
+  .ece-ed-types{display:flex;flex-wrap:wrap;gap:8px}
+  .ece-ed-type-btn{flex:1 1 30%;min-width:100px;border:1px solid var(--divider-color,#e0e0e0);border-radius:12px;background:var(--card-background-color,#fff);color:var(--primary-text-color);padding:10px 8px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;text-align:center}
+  .ece-ed-type-btn.on{border-color:var(--primary-color,#03a9f4);background:rgba(3,169,244,.12);color:var(--primary-color,#03a9f4)}
+  .ece-ed-choice{display:flex;gap:8px}
+  .ece-ed-choice-btn{flex:1;border:1px solid var(--divider-color,#e0e0e0);border-radius:12px;background:var(--card-background-color,#fff);color:var(--primary-text-color);padding:12px 10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;text-align:left;line-height:1.35}
+  .ece-ed-choice-btn small{display:block;font-size:11px;font-weight:500;color:var(--secondary-text-color);margin-top:3px}
+  .ece-ed-choice-btn.on{border-color:var(--primary-color,#03a9f4);background:rgba(3,169,244,.12)}
+  .ece-ed-sec{margin:18px 0 10px;padding-top:12px;border-top:1px solid var(--divider-color,#e0e0e0);font-size:11.5px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:var(--secondary-text-color)}
+  .ece-ed-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  ha-entity-picker{width:100%}
+  .ece-ed-input{width:100%;box-sizing:border-box;padding:11px 12px;border-radius:10px;border:1px solid var(--divider-color,#e0e0e0);background:var(--card-background-color,#fff);color:var(--primary-text-color);font:inherit;font-size:14px}
+  .ece-ed-input:focus{outline:none;border-color:var(--primary-color,#03a9f4)}
+  details.ece-ed-adv{margin-top:16px}
+  details.ece-ed-adv summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--primary-color,#03a9f4);padding:6px 0}
+  .ece-ed-missing{color:#c62828;font-size:12px;margin-top:4px}
+`;
+
+// -----------------------------------------------------------------------
+// Editor visuale condiviso per le card "a campi fissi" (FritzBox, Server,
+// NAS, Proxmox, UPS, Raccolta Differenziata, Energia Casa): a differenza
+// dell'elettrodomestico non c'e' da scegliere un "tipo", si va dritti ai
+// campi. Ogni card definisce solo il suo elenco (sezioni + campi), il
+// motore che disegna il form ed emette config-changed e' unico.
+// -----------------------------------------------------------------------
+function dmGetPath(obj, path) {
+  return path.split(".").reduce((o, k) => (o != null ? o[k] : undefined), obj);
+}
+
+function dmSetPath(root, path, value) {
+  const keys = path.split(".");
+  let obj = root;
+  for (let i = 0; i < keys.length - 1; i++) {
+    const k = keys[i];
+    const nextIsIndex = /^\d+$/.test(keys[i + 1]);
+    const existing = obj[k];
+    const container = Array.isArray(existing) ? [...existing] : existing && typeof existing === "object" ? { ...existing } : nextIsIndex ? [] : {};
+    obj[k] = container;
+    obj = container;
+  }
+  const lastKey = keys[keys.length - 1];
+  if (value === "" || value === undefined) delete obj[lastKey];
+  else obj[lastKey] = value;
+  return root;
+}
+
+class DmSimpleCardEditorBase extends HTMLElement {
+  // Sottoclassi: implementano get schema() -> [{ title, fields: [{key,label,kind,domain,required,hint}] }]
+  get schema() {
+    return [];
+  }
+
+  setConfig(config) {
+    this._config = { ...config };
+    this._render();
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+    if (this._root) {
+      this._root.querySelectorAll("ha-entity-picker").forEach((el) => {
+        el.hass = hass;
+      });
+    }
+  }
+
+  _emit() {
+    this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this._config }, bubbles: true, composed: true }));
+  }
+
+  _set(path, value) {
+    this._config = dmSetPath({ ...this._config }, path, value);
+    this._emit();
+  }
+
+  _render() {
+    if (!this._root) {
+      this._root = this.attachShadow({ mode: "open" });
+      this._root.innerHTML = `<style>${DM_EDITOR_STYLE}</style><div class="ece-ed-body"></div>`;
+    }
+    const body = this._root.querySelector(".ece-ed-body");
+    const cfg = this._config;
+    body.innerHTML = this.schema
+      .map(
+        (sec) => `
+      <div class="ece-ed-sec">${esc(sec.title)}</div>
+      ${sec.fields
+        .map((f) => {
+          const val = dmGetPath(cfg, f.key);
+          if (f.kind === "entity" || !f.kind) {
+            return `<div class="ece-ed-row">
+              <span class="ece-ed-label">${esc(f.label)}${f.required ? " — obbligatorio" : ""}</span>
+              ${f.hint ? `<p class="ece-ed-hint">${esc(f.hint)}</p>` : ""}
+              <ha-entity-picker data-key="${esc(f.key)}" ${f.domain ? `include-domains='${JSON.stringify(f.domain)}'` : ""} allow-custom-entity></ha-entity-picker>
+              ${f.required && !val ? `<div class="ece-ed-missing">Serve un'entita' per far funzionare la card.</div>` : ""}
+            </div>`;
+          }
+          return `<div class="ece-ed-row">
+            <span class="ece-ed-label">${esc(f.label)}${f.required ? " — obbligatorio" : ""}</span>
+            ${f.hint ? `<p class="ece-ed-hint">${esc(f.hint)}</p>` : ""}
+            <input class="ece-ed-input" data-key="${esc(f.key)}" type="${f.kind === "number" ? "number" : "text"}" placeholder="${esc(f.placeholder || "")}">
+          </div>`;
+        })
+        .join("")}
+    `,
+      )
+      .join("");
+
+    body.querySelectorAll("ha-entity-picker[data-key]").forEach((el) => {
+      el.hass = this._hass;
+      el.value = dmGetPath(cfg, el.dataset.key) || "";
+      el.addEventListener("value-changed", (e) => {
+        e.stopPropagation();
+        this._set(el.dataset.key, e.detail.value);
+      });
+    });
+    body.querySelectorAll("input.ece-ed-input[data-key]").forEach((el) => {
+      const v = dmGetPath(cfg, el.dataset.key);
+      el.value = v ?? "";
+      el.addEventListener("change", () => {
+        this._set(el.dataset.key, el.type === "number" ? Number(el.value) : el.value);
+      });
+    });
+  }
+}
+
+class DmEnergyCardEditor extends DmSimpleCardEditorBase {
+  get schema() {
+    const circuits = [0, 1, 2, 3].map((i) => ({
+      title: `Barra ${i + 1}`,
+      fields: [
+        { key: `circuits.${i}.label`, label: "Etichetta", kind: "text", placeholder: i === 0 ? "Generale" : "" },
+        { key: `circuits.${i}.entity`, label: "Entita' (potenza in W)", domain: ["sensor"] },
+        { key: `circuits.${i}.max`, label: "Fondo scala (W)", kind: "number" },
+      ],
+    }));
+    return [
+      { title: "Base", fields: [
+        { key: "name", label: "Nome", kind: "text", placeholder: "Energia Casa" },
+        { key: "power_entity", label: "Sensore di potenza generale (W)", domain: ["sensor"], required: true },
+        { key: "max_power", label: "Fondo scala generale (W)", kind: "number", placeholder: "4500" },
+      ]},
+      ...circuits,
+      { title: "Avanzate", fields: [{ key: "layout_entity", label: "Menu layout (classico/centrato)", domain: ["input_select"] }]},
+    ];
+  }
+}
 class ControlloEnergiaCasaCard extends HTMLElement {
   setConfig(config) {
     if (!config.power_entity) throw new Error("power_entity \u00e8 obbligatorio");
@@ -1238,8 +1389,24 @@ class ControlloEnergiaCasaCard extends HTMLElement {
   getCardSize() {
     return 7;
   }
+
+  static getConfigElement() {
+    return document.createElement("ece-energy-card-editor");
+  }
+
+  static getStubConfig(hass) {
+    return {
+      name: "Energia Casa",
+      artwork: "energy",
+      power_entity: "",
+      max_power: 4500,
+      circuits: [],
+    };
+  }
 }
 
+
+customElements.define("ece-energy-card-editor", DmEnergyCardEditor);
 
 customElements.define("controllo-energia-casa-card", ControlloEnergiaCasaCard);
 window.customCards = window.customCards || [];
