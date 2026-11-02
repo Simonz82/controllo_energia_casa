@@ -6,7 +6,11 @@ La card ha due parti: il **file JavaScript** (la card vera e propria) e il **pac
 
 ### Con HACS (consigliato)
 
-1. HACS → menu ⋮ → **Repository personalizzati**.
+1. Clicca il pulsante per aprire il repository in HACS:
+
+   [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Simonz82&repository=controllo_energia_casa&category=plugin)
+
+   Oppure a mano: HACS → menu ⋮ → **Repository personalizzati**.
 2. Indirizzo: `https://github.com/Simonz82/controllo_energia_casa` · Categoria: **Dashboard**.
 3. Scarica **Controllo Energia Casa**.
 4. HACS aggiunge da solo la risorsa. Se non compare, aggiungila a mano: *Impostazioni → Dashboard → ⋮ → Risorse → Aggiungi*

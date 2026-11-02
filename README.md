@@ -1,5 +1,7 @@
 # ⚡ Controllo Energia Casa
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Simonz82&repository=controllo_energia_casa&category=plugin)
+
 > ## 📦 Già disponibile in HACS
 > Questa card fa già parte di **[smart-home-cards](https://github.com/Simonz82/smart-home-cards)**, il repository unico installabile da HACS che raccoglie tutte le mie card per Home Assistant — guida completa (incluso l'editor visuale) direttamente lì, nessun altro repo da aggiungere.
 >
@@ -68,7 +70,7 @@ I grafici (24 h · 7 gg · 30 gg · da … a) sono in [docs/grafici.md](docs/gra
 
 Il repository contiene **il mio package vero**, quello che uso a casa, ripulito solo dei dati privati: [`packages/controllo_energia_casa.yaml`](packages/controllo_energia_casa.yaml). Crea da solo tutti i contatori, i costi, gli interruttori, le notifiche e i menu delle barre, con gli stessi nomi che usa la card.
 
-1. Copia `controllo-energia-casa.js` in `/config/www/` e aggiungilo alle risorse della dashboard.
+1. Con HACS: clicca il pulsante in cima alla pagina per aprire il repository in HACS (oppure a mano: Repository personalizzati > URL > tipo Dashboard). Senza HACS: copia `controllo-energia-casa.js` in `/config/www/` e aggiungilo alle risorse della dashboard.
 2. Copia `packages/controllo_energia_casa.yaml` in `/config/packages/`.
 3. **Cambia 4 cose** dentro il package (le trovi in testa al file): il tuo sensore di potenza totale, gli speaker Alexa, i telefoni e gli ID Telegram.
 4. Riavvia Home Assistant e incolla la card di esempio.
